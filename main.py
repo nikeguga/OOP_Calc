@@ -1,6 +1,6 @@
 from calculator import Calculator, Context
 from operations import Addition, Multiplication, Division
-import logger  # предполагается, что у вас есть файл logger.py
+import logger
 
 def main():
     # Создаем экземпляр калькулятора
