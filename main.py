@@ -1,48 +1,34 @@
 from calculator import Calculator, Context
 from operations import Addition, Multiplication, Division
+from user_interface import UserInterface
 import logger
 
 def main():
-    # Создаем экземпляр калькулятора
     calculator = Calculator()
-
-    # Создаем экземпляр контекста для управления операциями
     context = Context()
+    user_interface = UserInterface()
 
     while True:
-        # Получаем операцию от пользователя
-        operation = input("Выберите операцию (+, *, /) или введите 'exit' для выхода: ").lower()
+        operation = user_interface.get_operation()
 
-        # Проверяем, нужно ли выйти из программы
         if operation == 'exit':
             break
 
-        # Устанавливаем соответствующую операцию стратегию в контексте
-        if operation == '+':
-            context.set_strategy(Addition())
-        elif operation == '*':
-            context.set_strategy(Multiplication())
-        elif operation == '/':
-            context.set_strategy(Division())
+        if operation in ('+', '*', '/'):
+            context.set_strategy(Addition() if operation == '+' else Multiplication() if operation == '*' else Division())
         else:
             print("Некорректная операция. Попробуйте еще раз.")
             continue
 
+        operand1, operand2 = user_interface.get_operands()
+        if operand1 is None or operand2 is None:
+            continue
+
         try:
-            # Получаем операнды от пользователя
-            operand1 = float(input("Введите первый операнд: "))
-            operand2 = float(input("Введите второй операнд: "))
-
-            # Выполняем операцию
             result = context.execute_strategy(operand1, operand2)
-
-            # Выводим результат
             print(f"Результат: {result}")
-
-        except ValueError as e:
-            print(f"Ошибка ввода: {e}")
-        except ZeroDivisionError:
-            print("Ошибка: деление на ноль.")
+        except ZeroDivisionError as e:
+            print(f"Ошибка: {e}")
 
 if __name__ == "__main__":
     main()
